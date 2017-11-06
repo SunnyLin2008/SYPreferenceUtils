@@ -13,7 +13,7 @@ static {
 PreferenceUtil.init(ExampleApplication.getInstance(), PreferenceManage.class);
 }
 ```
-to the PreferenceManage with your customer Application that like example which can get the Application can context when  PreferenceManage static initial.
+to the PreferenceManage with your customer Application that like [example](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/app/ExampleApplication.java) which can get the Application can context when  PreferenceManage static initial.
 
 ## How to use
 
