@@ -35,4 +35,5 @@ ExampleEnum enumType = PreferenceManage.ENUM_TYPE.get();
 ## License
 
 Copyright (C) 2014-2017 Sunny-Lin
+
 Licensed under the Apache License, Version 2.0
