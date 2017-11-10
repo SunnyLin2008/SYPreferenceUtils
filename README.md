@@ -13,13 +13,13 @@ SYPreference is a simple Android Preference helper library base on SharePreferen
     public final static PreferenceUtil<Integer> INT_TYPE = new PreferenceUtil<>(2); //a int value preference 
     public final static PreferenceUtil<ExampleEnum> ENUM_TYPE = new PreferenceUtil<>(ExampleEnum.A); //a enum value that you declare and want to read and write to the preference.
 ```
-3. Write code like
+3. Add initial code to the PreferenceManage class file under the fields you had declared before :
 ```java
 static {
 PreferenceUtil.init(ExampleApplication.getInstance(), PreferenceManage.class);
 }
 ```
-to the PreferenceManage with your customer Application that like [example](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/app/ExampleApplication.java) which can get the Application can context when  PreferenceManage static initial.
+ExampleApplication is your customer Application that like [example](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/app/ExampleApplication.java)
 
 ## How to use
 
