@@ -141,6 +141,9 @@ public class PreferenceUtil<T> {
         this.name = name;
     }
 
+    public void reset() {
+        set(defaultObject);
+    }
 
     public Context getDefaultContext() {
         return context;
