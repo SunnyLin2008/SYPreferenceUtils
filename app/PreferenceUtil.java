@@ -19,8 +19,10 @@ public class PreferenceUtil<T> {
 
     private static Context context;
     private T defaultObject;
+    private T cache;
     private PreferencesType type;
     private Boolean neverChange = false;
+    private Boolean enableCache = true;
     private Object firstObject = null;
     private Object secondObject = null;
     private SharedPreferences preferences;
@@ -53,11 +55,13 @@ public class PreferenceUtil<T> {
         return defaultObject;
     }
 
-
     public T get() {
         if (neverChange && firstObject != null) {
             return (T) firstObject;
         } else {
+            if (cache != null) {
+                return cache;
+            }
             preferences = getDefaultContext().getSharedPreferences(name, Context.MODE_PRIVATE);
             Object retObject = null;
             switch (type) {
@@ -92,7 +96,12 @@ public class PreferenceUtil<T> {
                 }
                 firstObject = retObject;
             }
-            return (T) retObject;
+            if (enableCache) {
+                cache = (T) retObject;
+                return cache;
+            } else {
+                return (T) retObject;
+            }
         }
     }
 
@@ -116,6 +125,9 @@ public class PreferenceUtil<T> {
                 break;
         }
         preferencesEditor.commit();
+        if (enableCache) {
+            cache = pre;
+        }
     }
 
     public byte getByte() {
@@ -143,6 +155,15 @@ public class PreferenceUtil<T> {
 
     public void reset() {
         set(defaultObject);
+    }
+
+    public void enableCache(Boolean enableCache) {
+        this.enableCache = enableCache;
+        cache = null;
+    }
+
+    public void cleanCache() {
+        cache = null;
     }
 
     public Context getDefaultContext() {
