@@ -1,6 +1,6 @@
-package com.example.sunnylin.myapplication;
+package com.example.sunnylin.sypreferenceutils;
 
-
+import com.sunnylin.sypreferenceutils.PreferenceUtil;
 
 public class PreferenceManage {
 

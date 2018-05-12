@@ -1,4 +1,4 @@
-package com.example.sunnylin.myapplication;
+package com.example.sunnylin.sypreferenceutils;
 
 import android.app.Application;
 

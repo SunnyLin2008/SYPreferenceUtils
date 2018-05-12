@@ -1,4 +1,4 @@
-package com.example.sunnylin.myapplication;
+package com.example.sunnylin.sypreferenceutils;
 
 /**
  * Created by SunnyLin on 2017/09/16.

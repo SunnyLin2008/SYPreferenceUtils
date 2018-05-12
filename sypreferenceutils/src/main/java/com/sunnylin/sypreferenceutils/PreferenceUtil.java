@@ -1,4 +1,4 @@
-package com.example.sunnylin.myapplication;
+package com.sunnylin.sypreferenceutils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
