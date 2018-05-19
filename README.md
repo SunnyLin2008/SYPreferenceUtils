@@ -45,7 +45,7 @@ ExampleEnum enumType = PreferenceManage.ENUM_TYPE.get();
  ### Use with prefix
  ```java
  PreferenceUtil.setPrefix("Your prefix");
- ```java
+ ```
 
 ## License
 
