@@ -21,33 +21,27 @@ public class PreferenceUtil<T> {
     private T defaultObject;
     private T cache;
     private PreferencesType type;
-    private Boolean neverChange = false;
     private Boolean enableCache = true;
-    private Object firstObject = null;
-    private Object secondObject = null;
     private SharedPreferences preferences;
-    private SharedPreferences.Editor preferencesEditor;
 
-    private String name = "";
+    private static String prefix = "";
+    private String name = null;
 
     public PreferenceUtil(T defaultObject) {
-        this(defaultObject, false);
+        this(defaultObject, "");
     }
 
-    public PreferenceUtil(T defaultObject, Boolean neverChange) {
+    public PreferenceUtil(T defaultObject, String name) {
         this.defaultObject = defaultObject;
-        this.neverChange = neverChange;
+        this.name = name;
         if (defaultObject instanceof Enum<?>) {
             type = PreferencesType.ENUM;
         } else if (defaultObject instanceof Boolean) {
             type = PreferencesType.BOOL;
-            secondObject = !(Boolean) defaultObject;
         } else if (defaultObject instanceof Integer) {
             type = PreferencesType.INT;
-            secondObject = (Integer) defaultObject - 1;
         } else if (defaultObject instanceof String) {
             type = PreferencesType.STRING;
-            secondObject = "--";
         }
     }
 
@@ -56,70 +50,59 @@ public class PreferenceUtil<T> {
     }
 
     public T get() {
-        if (neverChange && firstObject != null) {
-            return (T) firstObject;
-        } else {
-            if (cache != null) {
-                return cache;
-            }
-            preferences = getDefaultContext().getSharedPreferences(name, Context.MODE_PRIVATE);
-            Object retObject = null;
-            switch (type) {
-                case BOOL:
-                    retObject = preferences.getBoolean(name, (Boolean) defaultObject);
-                    break;
-                case INT:
-                    retObject = preferences.getInt(name, (Integer) defaultObject);
-                    break;
-                case STRING:
-                    retObject = preferences.getString(name, (String) defaultObject);
-                    break;
-                case ENUM:
-                    Enum<?> enumDefault = (Enum<?>) defaultObject;
-                    int original = preferences.getInt(name, enumDefault.ordinal());
-                    Class<?> enumClass = enumDefault.getClass();
-                    Method method = null;
-                    try {
-                        method = enumClass.getMethod("values", new Class[0]);
-                        Object[] enums = (Object[]) method.invoke(null, new Object[]{});
-                        retObject = enums[original];
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                default:
-                    break;
-            }
-            if (neverChange) {
-                if (firstObject == null) {
-                    set((T) secondObject);
+        if (cache != null) {
+            return cache;
+        }
+        preferences = getDefaultContext().getSharedPreferences(getKey(), Context.MODE_PRIVATE);
+        Object retObject = null;
+        switch (type) {
+            case BOOL:
+                retObject = preferences.getBoolean(getKey(), (Boolean) defaultObject);
+                break;
+            case INT:
+                retObject = preferences.getInt(getKey(), (Integer) defaultObject);
+                break;
+            case STRING:
+                retObject = preferences.getString(getKey(), (String) defaultObject);
+                break;
+            case ENUM:
+                Enum<?> enumDefault = (Enum<?>) defaultObject;
+                int original = preferences.getInt(getKey(), enumDefault.ordinal());
+                Class<?> enumClass = enumDefault.getClass();
+                try {
+                    Method method = enumClass.getMethod("values", new Class[0]);
+                    Object[] enums = (Object[]) method.invoke(null, new Object[]{});
+                    retObject = enums[original];
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                firstObject = retObject;
-            }
-            if (enableCache) {
-                cache = (T) retObject;
-                return cache;
-            } else {
-                return (T) retObject;
-            }
+                break;
+            default:
+                break;
+        }
+        if (enableCache) {
+            cache = (T) retObject;
+            return cache;
+        } else {
+            return (T) retObject;
         }
     }
 
     public void set(T pre) {
-        preferences = getDefaultContext().getSharedPreferences(name, Context.MODE_PRIVATE);
-        preferencesEditor = preferences.edit();
+        preferences = getDefaultContext().getSharedPreferences(getKey(), Context.MODE_PRIVATE);
+      SharedPreferences.Editor preferencesEditor = preferences.edit();
         switch (type) {
             case BOOL:
-                preferencesEditor.putBoolean(name, (Boolean) pre);
+                preferencesEditor.putBoolean(getKey(), (Boolean) pre);
                 break;
             case INT:
-                preferencesEditor.putInt(name, (Integer) pre);
+                preferencesEditor.putInt(getKey(), (Integer) pre);
                 break;
             case STRING:
-                preferencesEditor.putString(name, (String) pre);
+                preferencesEditor.putString(getKey(), (String) pre);
                 break;
             case ENUM:
-                preferencesEditor.putInt(name, ((Enum<?>) pre).ordinal());
+                preferencesEditor.putInt(getKey(), ((Enum<?>) pre).ordinal());
                 break;
             default:
                 break;
@@ -149,8 +132,16 @@ public class PreferenceUtil<T> {
         return retByte;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    private String getKey() {
+        return prefix + name;
     }
 
     public void reset() {
@@ -168,6 +159,10 @@ public class PreferenceUtil<T> {
 
     public Context getDefaultContext() {
         return context;
+    }
+
+    public static void setPrefix(String prefix) {
+        PreferenceUtil.prefix = prefix;
     }
 
     public static void init(Context context, Class<?> tClass) {
