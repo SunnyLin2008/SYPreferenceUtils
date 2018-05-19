@@ -5,8 +5,13 @@ SYPreference is a simple Android Preference helper library base on SharePreferen
 
 ## Setup
 
-1. Copy  the [PreferenceUtil.java](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/sypreferenceutils/src/main/java/com/sunnylin/sypreferenceutils/PreferenceUtil.java) file to your project.
-2. Create a PreferenceManage class like [example](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/app/PreferenceManage.java) and preference fields with the data type what will be write and read.
+
+1.  Including in your project  with :
+    ```
+    implementation 'com.sunnylin2008:sypreferenceutils:1.0'
+    ```
+    (Also you can only copy  the [PreferenceUtil.java](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/sypreferenceutils/src/main/java/com/sunnylin/sypreferenceutils/PreferenceUtil.java) file into your project.)
+2. Create a PreferenceManage class like [example](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/sample/src/main/java/com/example/sunnylin/sypreferenceutils/PreferenceManage.java) and preference fields with the data type what will be write and read.
 ```java
 public final static PreferenceUtil<Boolean> BOOL_TYPE = new PreferenceUtil<>(true); //a bool value preference 
 public final static PreferenceUtil<String> STRING_TYPE = new PreferenceUtil<>(""); //a String value preference 
@@ -19,7 +24,7 @@ static {
   PreferenceUtil.init(ExampleApplication.getInstance(), PreferenceManage.class);
 }
 ```
-  ExampleApplication is your customer Application that like [example](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/app/ExampleApplication.java)
+  ExampleApplication is your customer Application that like [example](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/sample/src/main/java/com/example/sunnylin/sypreferenceutils/ExampleApplication.java)
 
 ## How to use
 
@@ -37,6 +42,10 @@ String stringType = PreferenceManage.STRING_TYPE.get();
 int intType = PreferenceManage.INT_TYPE.get();
 ExampleEnum enumType = PreferenceManage.ENUM_TYPE.get();
  ```
+ ### Use with prefix
+ ```java
+ PreferenceUtil.setPrefix("Your prefix");
+ ```java
 
 ## License
 
