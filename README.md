@@ -8,7 +8,7 @@ SYPreference is a simple Android Preference helper library base on SharePreferen
 
 1.  Including in your project  with :
     ```
-    implementation 'com.sunnylin2008:sypreferenceutils:1.0'
+    implementation 'com.sunnylin2008:sypreferenceutils:1.1'
     ```
     (Also you can only copy  the [PreferenceUtil.java](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/sypreferenceutils/src/main/java/com/sunnylin/sypreferenceutils/PreferenceUtil.java) file into your project.)
 2. Create a PreferenceManage class like [example](https://github.com/SunnyLin2008/SYPreferenceUtils/blob/master/sample/src/main/java/com/example/sunnylin/sypreferenceutils/PreferenceManage.java) and preference fields with the data type what will be write and read.
