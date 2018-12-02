@@ -2,6 +2,7 @@ package com.sunnylin.sypreferenceutils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,23 +18,29 @@ public class PreferenceUtil<T> {
         BOOL, INT, STRING, ENUM
     }
 
+    private static String defaultFileName = null;
+    private static boolean defaultUseKeyAsFileName = false;
+
     private static Context context;
     private T defaultObject;
     private T cache;
     private PreferencesType type;
     private Boolean enableCache = true;
     private SharedPreferences preferences;
+    private boolean useKeyAsFileName = false;
 
     private static String prefix = "";
-    private String name = null;
+    private String key = null;
+
+    private String fileName = null;
 
     public PreferenceUtil(T defaultObject) {
         this(defaultObject, "");
     }
 
-    public PreferenceUtil(T defaultObject, String name) {
+    public PreferenceUtil(T defaultObject, String key) {
         this.defaultObject = defaultObject;
-        this.name = name;
+        this.key = key;
         if (defaultObject instanceof Enum<?>) {
             type = PreferencesType.ENUM;
         } else if (defaultObject instanceof Boolean) {
@@ -45,6 +52,10 @@ public class PreferenceUtil<T> {
         }
     }
 
+    public SharedPreferences getPreferences() {
+        return context.getSharedPreferences(getFileName(), Context.MODE_PRIVATE);
+    }
+
     public T getDefault() {
         return defaultObject;
     }
@@ -53,7 +64,7 @@ public class PreferenceUtil<T> {
         if (cache != null) {
             return cache;
         }
-        preferences = getDefaultContext().getSharedPreferences(getKey(), Context.MODE_PRIVATE);
+        preferences = getPreferences();
         Object retObject = null;
         switch (type) {
             case BOOL:
@@ -89,8 +100,8 @@ public class PreferenceUtil<T> {
     }
 
     public void set(T pre) {
-        preferences = getDefaultContext().getSharedPreferences(getKey(), Context.MODE_PRIVATE);
-      SharedPreferences.Editor preferencesEditor = preferences.edit();
+        preferences = getPreferences();
+        SharedPreferences.Editor preferencesEditor = preferences.edit();
         switch (type) {
             case BOOL:
                 preferencesEditor.putBoolean(getKey(), (Boolean) pre);
@@ -113,35 +124,13 @@ public class PreferenceUtil<T> {
         }
     }
 
-    public byte getByte() {
-        T object = get();
-        byte retByte = -1;
-        switch (type) {
-            case BOOL:
-                retByte = (byte) (((Boolean) object) ? 1 : 0);
-                break;
-            case INT:
-                retByte = (byte) ((Integer) object & 0xff);
-                break;
-            case ENUM:
-                retByte = (byte) ((Enum<?>) object).ordinal();
-                break;
-            default:
-                break;
-        }
-        return retByte;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     private String getKey() {
-        return prefix + name;
+        return prefix + key;
     }
 
     public void reset() {
@@ -165,6 +154,37 @@ public class PreferenceUtil<T> {
         PreferenceUtil.prefix = prefix;
     }
 
+    public static void setDefaultFileName(String defaultFileName) {
+        PreferenceUtil.defaultFileName = defaultFileName;
+    }
+
+    public static String getDefaultFileName() {
+        if (TextUtils.isEmpty(defaultFileName)) {
+            return context.getPackageName() + "_share_preferences";
+        } else {
+            return defaultFileName;
+        }
+    }
+
+    public static void setDefaultUseKeyAsFileName(boolean defaultUseKeyAsFileName) {
+        PreferenceUtil.defaultUseKeyAsFileName = defaultUseKeyAsFileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileName() {
+        if (!TextUtils.isEmpty(fileName)) {
+            return fileName;
+        }
+        if (useKeyAsFileName || defaultUseKeyAsFileName) {
+            return getKey();
+        }
+        return getDefaultFileName();
+    }
+
+
     public static void init(Context context, Class<?> tClass) {
         PreferenceUtil.context = context;
         Field[] fields = tClass.getDeclaredFields();
@@ -172,7 +192,7 @@ public class PreferenceUtil<T> {
             if (Modifier.isStatic(field.getModifiers())) {
                 if (field.getType() == PreferenceUtil.class) {
                     try {
-                        ((PreferenceUtil) field.get(null)).setName(field.getName());
+                        ((PreferenceUtil) field.get(null)).setKey(field.getName());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
