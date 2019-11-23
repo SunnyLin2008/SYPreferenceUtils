@@ -1,2 +1,2 @@
-include ':sample', ':library'
-project(':library').projectDir = new File('sypreferenceutils')
+include ':sample', ':sypreferenceutils'
+project(':sypreferenceutils').projectDir = new File('sypreferenceutils')
