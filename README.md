@@ -1,4 +1,14 @@
-# SYPreference
+Note(2019/11/23)
+======================
+
+This project has a new name and home!
+
+You can now find `PreferenceCell` [here](https://github.com/SunnyLin2008/PreferenceCell).
+
+======================
+
+
+# SYPreference 
 
 SYPreference is a simple Android Preference helper library base on SharePreferences. With SYPreference you can easily to write and read  data in simple code. You can even save the enum to SharePreferences with SYPreference.
 
